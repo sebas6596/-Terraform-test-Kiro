@@ -1,0 +1,72 @@
+# Security Group para instancias EC2
+resource "aws_security_group" "web_servers" {
+  name        = "${var.project_name}-web-servers-sg"
+  description = "Security group para servidores web"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description     = "HTTP desde ALB"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  egress {
+    description = "Permitir todo el tráfico saliente"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project_name}-web-servers-sg"
+  }
+}
+
+# Obtener la AMI más reciente de Amazon Linux 2023
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+# Instancias EC2 en subnets privadas
+resource "aws_instance" "web_servers" {
+  count                  = length(var.availability_zones)
+  ami                    = data.aws_ami.amazon_linux.id
+  instance_type          = var.instance_type
+  subnet_id              = aws_subnet.private[count.index].id
+  vpc_security_group_ids = [aws_security_group.web_servers.id]
+
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install -y httpd
+              systemctl start httpd
+              systemctl enable httpd
+              echo "<h1>Server-web-${count.index + 1} en ${var.availability_zones[count.index]}</h1>" > /var/www/html/index.html
+              EOF
+
+  tags = {
+    Name = "${var.project_name}-server-web-${count.index + 1}"
+  }
+}
+
+# Registrar instancias en el Target Group
+resource "aws_lb_target_group_attachment" "web_servers" {
+  count            = length(aws_instance.web_servers)
+  target_group_arn = aws_lb_target_group.main.arn
+  target_id        = aws_instance.web_servers[count.index].id
+  port             = 80
+}
