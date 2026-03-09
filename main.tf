@@ -7,10 +7,23 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  # Configuración para Terraform Cloud (descomentar y configurar)
+  # cloud {
+  #   organization = "tu-organizacion"
+  #   workspaces {
+  #     name = "aws-infrastructure"
+  #   }
+  # }
 }
 
 provider "aws" {
   region = var.aws_region
+  
+  # Terraform Cloud gestionará estas variables de entorno:
+  # - AWS_ACCESS_KEY_ID
+  # - AWS_SECRET_ACCESS_KEY
+  # - AWS_DEFAULT_REGION
 }
 
 # VPC

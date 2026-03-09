@@ -22,19 +22,91 @@ La infraestructura incluye:
 
 ## Configuración de Credenciales AWS
 
-Configura tus credenciales de AWS usando uno de estos métodos:
+### Opción 1: Terraform Cloud (Recomendado)
+
+1. Crea una cuenta en [Terraform Cloud](https://app.terraform.io)
+2. Crea una organización y un workspace
+3. Configura las siguientes variables de entorno en el workspace:
+   - `AWS_ACCESS_KEY_ID` (sensitive)
+   - `AWS_SECRET_ACCESS_KEY` (sensitive)
+   - `AWS_DEFAULT_REGION` (valor: us-east-1)
+
+4. Actualiza el bloque `cloud` en `main.tf`:
+```hcl
+cloud {
+  organization = "tu-organizacion"
+  workspaces {
+    name = "aws-infrastructure"
+  }
+}
+```
+
+5. Autentícate con Terraform Cloud:
+```bash
+terraform login
+```
+
+### Opción 2: Ejecución Local
+
+Configura tus credenciales de AWS localmente:
 
 ```bash
-# Opción 1: AWS CLI
+# Opción A: AWS CLI
 aws configure
 
-# Opción 2: Variables de entorno
+# Opción B: Variables de entorno
 export AWS_ACCESS_KEY_ID="tu-access-key"
 export AWS_SECRET_ACCESS_KEY="tu-secret-key"
 export AWS_DEFAULT_REGION="us-east-1"
 ```
 
 ## Uso
+
+### Con Terraform Cloud
+
+1. **Clonar el repositorio**
+
+```bash
+git clone <url-del-repositorio>
+cd <nombre-del-repositorio>
+```
+
+2. **Configurar Terraform Cloud**
+
+Edita `main.tf` y actualiza el bloque `cloud` con tu organización y workspace.
+
+3. **Autenticarse**
+
+```bash
+terraform login
+```
+
+4. **Inicializar Terraform**
+
+```bash
+terraform init
+```
+
+5. **Configurar variables en Terraform Cloud**
+
+En la UI de Terraform Cloud, configura:
+- Variables de entorno (Environment Variables):
+  - `AWS_ACCESS_KEY_ID` (marca como sensitive)
+  - `AWS_SECRET_ACCESS_KEY` (marca como sensitive)
+  - `AWS_DEFAULT_REGION` = `us-east-1`
+
+- Variables de Terraform (opcional):
+  - `project_name`
+  - `instance_type`
+  - etc.
+
+6. **Aplicar la configuración**
+
+```bash
+terraform apply
+```
+
+### Con Ejecución Local
 
 1. **Clonar el repositorio**
 

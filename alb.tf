@@ -1,11 +1,11 @@
 # Security Group para ALB
 resource "aws_security_group" "alb" {
   name        = "${var.project_name}-alb-sg"
-  description = "Security group para Application Load Balancer"
+  description = "Security group for Application Load Balancer"
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "HTTP desde Internet"
+    description = "HTTP from Internet"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -13,7 +13,7 @@ resource "aws_security_group" "alb" {
   }
 
   ingress {
-    description = "HTTPS desde Internet"
+    description = "HTTPS from Internet"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -21,7 +21,7 @@ resource "aws_security_group" "alb" {
   }
 
   egress {
-    description = "Permitir todo el tráfico saliente"
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
