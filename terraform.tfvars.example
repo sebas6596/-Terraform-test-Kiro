@@ -1,0 +1,16 @@
+# Copia este archivo a terraform.tfvars y ajusta los valores según tus necesidades
+
+aws_region   = "us-east-1"
+project_name = "aws-infrastructure"
+
+# VPC Configuration
+vpc_cidr                 = "10.0.0.0/16"
+public_subnet_1a_cidr    = "10.0.1.0/24"
+public_subnet_1b_cidr    = "10.0.2.0/24"
+private_subnet_1a_cidr   = "10.0.11.0/24"
+private_subnet_1b_cidr   = "10.0.12.0/24"
+
+# EC2 Configuration
+instance_type = "t2.micro"
+# AMI ID para Amazon Linux 2 en us-east-1 (actualiza según tu región)
+ami_id = "ami-0c55b159cbfafe1f0"
