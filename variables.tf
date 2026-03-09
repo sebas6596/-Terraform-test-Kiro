@@ -1,5 +1,11 @@
 variable "aws_region" {
-  description = "Región de AWS donde se desplegará la infraestructura"
+  description = "AWS region where infrastructure will be deployed"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "AWS_DEFAULT_REGION" {
+  description = "AWS default region managed by Terraform Cloud"
   type        = string
   default     = "us-east-1"
 }

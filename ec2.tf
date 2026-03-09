@@ -1,11 +1,11 @@
 # Security Group para instancias EC2
 resource "aws_security_group" "web_servers" {
   name        = "${var.project_name}-web-servers-sg"
-  description = "Security group para servidores web"
+  description = "Security group for web servers"
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description     = "HTTP desde ALB"
+    description     = "HTTP from ALB"
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
@@ -13,7 +13,7 @@ resource "aws_security_group" "web_servers" {
   }
 
   egress {
-    description = "Permitir todo el tráfico saliente"
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
